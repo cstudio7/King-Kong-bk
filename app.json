@@ -1,0 +1,47 @@
+{
+  "addons": [
+    "heroku-postgresql",
+    "heroku-redis"
+  ],
+  "buildpacks": [
+
+  ],
+  "env": {
+    "NPM_CONFIG_PRODUCTION": {
+      "required": true
+    },
+    "GOOGLE_CLIENT_ID": {
+      "required": true
+    },
+    "GOOGLE_CLIENT_SECRET": {
+      "required": true
+    },
+    "FB_CLIENT_ID": {
+      "required": true
+    },
+    "FB_CLIENT_SECRET": {
+      "required": true
+    },
+    "TOKEN": {
+      "required": true
+    },
+    "API_KEY": {
+      "required": true
+    },
+    "FROM_EMAIL": {
+      "required": true
+    },
+    "baseUrl": {
+      "required": true
+    },
+    "SENTRY_DSN": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "name": "mervels-bn-backend",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}

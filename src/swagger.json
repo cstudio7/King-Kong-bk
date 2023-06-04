@@ -1,0 +1,2185 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "description": "Make company global travel and accommodation easy and convenient for the strong workforce of savvy members of staff, by leveraging the modern web.\n",
+    "title": "Barefoot Nomad",
+    "contact": {
+      "name": "Marvel Universe",
+      "email": "marveluniverse@marvel.com"
+    }
+  },
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "user",
+      "description": "User End Points"
+    },
+    {
+      "name": "notifications",
+      "description": "Notifications End Points"
+    },
+    {
+      "name": "accommodation",
+      "description": "Travel admin creates accommodations"
+    },
+    {
+      "name": "requests",
+      "description": "Requests end points"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Add a new user",
+        "description": "End point for creating a new user",
+        "operationId": "addUser",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Add a new user",
+        "description": "End point for creating a new user",
+        "operationId": "registerUser",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that needs to be added to the store",
+            "schema": {
+              "$ref": "#/definitions/SignIn"
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/auth/forgotPassword": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Request for password reset via email",
+        "description": "User can request for a password reset",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "Email for account to reset password 'test@example.com'",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Account not Found"
+          },
+          "200": {
+            "description": "Email succesfully sent"
+          }
+        }
+      }
+    },
+    "/auth/resetPassword/{userId}/{token}": {
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Reset to new password",
+        "description": "User can reset their password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Users Id attached to reset password link",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "token",
+            "in": "path",
+            "description": "Token attached to reset password link",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "Enter Users new password with atleast 1 number, 1uppercase, 1lowercase",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "newPassword",
+            "in": "formData",
+            "description": "Re-type Users new password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Password dont match"
+          },
+          "403": {
+            "description": "Forbidden Request"
+          },
+          "200": {
+            "description": "Password succesfully updated"
+          }
+        }
+      }
+    },
+    "/auth/createLink": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Verification link",
+        "description": "Sends a verification link to email",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "body",
+            "description": "Email to receive the link",
+            "schema": {
+              "$ref": "#/definitions/CreateLink"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email sent with a verification link",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "email sent with verification link",
+                "data": {
+                  "userEmail": "bahati.robben@andela1.com",
+                  "link": "http://localhost:3000/api/v1/auth/verify/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJiYWhhdGkucm9iYmVuQGFuZGVsYTEuY29tIiwiZmlyc3ROYW1lIjoicm9iYmVucyIsImxhc3ROYW1lIjoiZmlqc29pYXMiLCJpYXQiOjE1NjgxMjg4MDJ9.PsoH0R3T6L7sn9MndPKJSLORX6l-y6kf_O-zDs7z4I4"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "examples": {
+              "application/json": {
+                "status": 404,
+                "message": "this email is not registered"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/verify/?token={token}": {
+      "patch": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Verification link",
+        "description": "Sends a verification link to email",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "email verification",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email verified",
+            "examples": {
+              "application/json": {
+                "status": 201,
+                "message": "Email verified",
+                "data": {
+                  "status": 201,
+                  "message": "Email verified succesfully",
+                  "userEmail": "bahati.robben@andela.com"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "examples": {
+              "application/json": {
+                "status": 409,
+                "error": "Email already verified"
+              }
+            }
+          }
+        },
+        "definitions": {
+          "Request": {
+            "required": [
+              "email"
+            ],
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          "Reset": {
+            "required": [
+              "password",
+              "newPassword"
+            ],
+            "type": "object",
+            "properties": {
+              "password": {
+                "type": "string"
+              },
+              "newPassword": {
+                "type": "string"
+              }
+            }
+          },
+          "User": {
+            "type": "object",
+            "properties": {
+              "firstName": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userPassword": {
+                "type": "string"
+              }
+            },
+            "xml": {
+              "name": "User"
+            }
+          },
+          "Status": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "description": "Status"
+              }
+            },
+            "xml": {
+              "name": "Status"
+            }
+          },
+          "SignIn": {
+            "type": "object",
+            "properties": {
+              "userEmail": {
+                "type": "string",
+                "description": "email",
+                "example": "name@example.com"
+              },
+              "userPassword": {
+                "type": "string",
+                "description": "password"
+              }
+            },
+            "xml": {
+              "name": "Price"
+            }
+          },
+          "CreateLink": {
+            "type": "object",
+            "properties": {
+              "userEmail": {
+                "type": "string",
+                "description": "email",
+                "example": "name@example.com"
+              }
+            },
+            "xml": {
+              "name": "Email"
+            }
+          },
+          "ApiResponse": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "type": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/updateRole": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update user role",
+        "description": "End point for updating the user role",
+        "operationId": "Update user role",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that needs to be updated",
+            "schema": {
+              "$ref": "#/definitions/updateRole"
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/auth/add-user": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Super Admin can add a user",
+        "description": "person with a super admin role can add a user account and send am email with login credentials",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that needs to be added",
+            "schema": {
+              "$ref": "#/definitions/userByAdmin"
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Invalid input"
+          },
+          "201": {
+            "description": "user account added sucessfully"
+          },
+          "409": {
+            "description": "User already exists"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/auth/email-preferences": {
+      "patch": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update email preference",
+        "description": "This endpoint allows the user to opt in/out of email notifationss",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Your email preferences have been successfully updated"
+          },
+          "401": {
+            "description": "Invalid or expired token"
+          }
+        }
+      }
+    },
+    "/notifications/mark-as-read": {
+      "patch": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Mark one or all notifications as read",
+        "description": "This endpoint allows the user to mark one or all his/her notifications as read. You pass in an id to mark one as read, or leave it to mark all as read",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name" : "id",
+            "in" : "query",
+            "description" : "Notification ID",
+            "required" : false,
+            "type" : "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification(s) successfully marked as read"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "404": {
+            "description": "Notification not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/auth/unsubscribe/?token={token}": {
+      "patch": {
+        "tags": [
+          "user"
+        ],
+        "summary": "unsubscribe",
+        "description": "unsubscribe from email notification",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "token for the user who is to be opted-out",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "request found",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "You 've opted out of email notifications successfully",
+                "data": {
+                    "emailAllowed": false
+                }
+            }
+            }
+          },
+          "409": {
+            "description": "conflicts",
+            "examples": {
+              "application/json": {
+                "status": 409,
+                "message": "You are already opted out of email notifications",
+                "error": "Conflict Error"
+              }
+            }
+          },
+          "400": {
+            "description": "invalid token",
+            "examples": {
+              "application/json": {
+                "status": 400,
+                "errors": "bad request"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "View my notifcations",
+        "description": "User can view all his/her notifications",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "401": {
+            "status": 401,
+            "message": "Invalid or expired token used"
+          },
+          "200": {
+            "status": 200,
+            "message": "Your notifications have been retrieved successfully",
+            "data": []
+          }
+        }
+      }
+    },
+    "/accommodations": {
+      "get": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "List all accommodations",
+        "description": "List all accommodations in the application",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accomodations found",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "Accommodations fetched successfully",
+                "data": [
+                  {
+                    "id": 3,
+                    "name": "burundi",
+                    "available": true,
+                    "imageUrl": "hjgsdjas",
+                    "location": "Kigali",
+                    "createdAt": "2019-09-16T17:52:41.777Z",
+                    "updatedAt": "2019-09-17T15:22:35.152Z",
+                    "Rooms": [
+                      {
+                        "id": 1,
+                        "name": "D4",
+                        "type": "2 bedroom",
+                        "accommodationId": 3,
+                        "available": true,
+                        "createdAt": "2019-09-16T18:12:36.039Z",
+                        "updatedAt": "2019-09-16T18:12:36.039Z"
+                      },
+                      {
+                        "id": 2,
+                        "name": "D5",
+                        "type": "2 bedroom",
+                        "accommodationId": 3,
+                        "available": true,
+                        "createdAt": "2019-09-16T18:13:15.379Z",
+                        "updatedAt": "2019-09-16T18:13:15.379Z"
+                      },
+                      {
+                        "id": 9,
+                        "name": "kalisimbi",
+                        "type": "two bedroom",
+                        "accommodationId": 3,
+                        "available": true,
+                        "createdAt": "2019-09-17T15:05:29.878Z",
+                        "updatedAt": "2019-09-17T15:05:29.878Z"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "invalid or expired token",
+            "examples": {
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "creates a new accommodation",
+        "description": "creates a new accommodation",
+        "consumes": [
+          "application/x-www-form-urlencoded",
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Name of accommodation to create",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "locationId",
+            "in": "formData",
+            "description": "Location of the accommodation",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "Url to image of the meal",
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Accommodation was added successfully",
+            "examples": {
+              "application/json": {
+                "status": 201,
+                "message": "Accommodation created successfully",
+                "data": {
+                  "available": true,
+                  "id": 16,
+                  "name": "Mariot",
+                  "location": "Kigali",
+                  "imageUrl": "http://res.cloudinary.com/bahati/image/upload/v1568746852/rkovhn3mjeifjs3o91ed.png",
+                  "updatedAt": "2019-09-17T19:00:51.165Z",
+                  "createdAt": "2019-09-17T19:00:51.165Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "examples": {
+              "application/json": {
+                "status": 400,
+                "message": "validations failed",
+                "error": [
+                  {
+                    "message": "name field is required and must be a string",
+                    "path": [
+                      "name"
+                    ],
+                    "type": "any.required",
+                    "context": {
+                      "key": "name",
+                      "label": "name"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "invalid or expired token",
+            "examples": {
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
+                }
+              }
+            }
+          },
+          "403": {
+            "status": 403,
+            "message": "You are not allowed to perform this task",
+            "error": "Authorization error"
+          }
+        }
+      }
+    },
+    "/accommodations/{accommodationId}": {
+      "get": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "Get one accommodation",
+        "description": "List all accommodations in the application",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "accommodationId",
+            "in": "path",
+            "description": "accommodation Id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accomodation found",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "Accommodation fetched successfully",
+                "data": {
+                  "id": 3,
+                  "name": "burundi",
+                  "available": true,
+                  "imageUrl": "hjgsdjas",
+                  "location": "Kigali",
+                  "createdAt": "2019-09-16T17:52:41.777Z",
+                  "updatedAt": "2019-09-17T15:22:35.152Z",
+                  "Rooms": [
+                    {
+                      "id": 1,
+                      "name": "D4",
+                      "type": "2 bedroom",
+                      "accommodationId": 3,
+                      "available": true,
+                      "createdAt": "2019-09-16T18:12:36.039Z",
+                      "updatedAt": "2019-09-16T18:12:36.039Z"
+                    },
+                    {
+                      "id": 2,
+                      "name": "D5",
+                      "type": "2 bedroom",
+                      "accommodationId": 3,
+                      "available": true,
+                      "createdAt": "2019-09-16T18:13:15.379Z",
+                      "updatedAt": "2019-09-16T18:13:15.379Z"
+                    },
+                    {
+                      "id": 9,
+                      "name": "kalisimbi",
+                      "type": "two bedroom",
+                      "accommodationId": 3,
+                      "available": true,
+                      "createdAt": "2019-09-17T15:05:29.878Z",
+                      "updatedAt": "2019-09-17T15:05:29.878Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "invalid or expired token",
+            "examples": {
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "accommodation not found",
+            "examples": {
+              "application/json": {
+                "status": 404,
+                "message": "error",
+                "error": "Accommodation not found"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accommodations/rooms": {
+      "post": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "creates a new room",
+        "description": "creates a new room",
+        "consumes": [
+          "application/x-www-form-urlencoded",
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Name of room to create",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "type of the room",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "accommodationId",
+            "in": "formData",
+            "description": "accommodation to contain the room",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Room was added successfully",
+            "examples": {
+              "application/json": {
+                "status": 201,
+                "message": "Room created successfully",
+                "data": {
+                  "available": true,
+                  "id": 13,
+                  "name": "muhabura3",
+                  "type": "two bedroom",
+                  "accommodationId": 10,
+                  "updatedAt": "2019-09-17T16:20:47.765Z",
+                  "createdAt": "2019-09-17T16:20:47.765Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "examples": {
+              "application/json": {
+                "status": 400,
+                "message": "validations failed",
+                "error": [
+                  {
+                    "message": "name field is required and must be a string",
+                    "path": [
+                      "name"
+                    ],
+                    "type": "any.required",
+                    "context": {
+                      "key": "name",
+                      "label": "name"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "invalid or expired token",
+            "examples": {
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
+                }
+              }
+            }
+          },
+          "403": {
+            "status": 403,
+            "message": "You are not allowed to perform this task",
+            "error": "Authorization error"
+          },
+          "404": {
+            "status": 404,
+            "message": "error",
+            "error": "Accommodation not found"
+          }
+        }
+      }
+    },
+    "/accommodations/{id}/like": {
+      "patch": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "Like or Unlike an accommodation",
+        "description": "This endpoint allows the user to like an accommodation or unlike it if already liked",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Accommodation ID",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully liked or unliked accommodation"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "404": {
+            "description": "Accommodation not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/accommodations/most-travelled-destination": {
+      "get": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "Get the most travelled destination",
+        "description": "This is to help managers and other users to make better decisions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrives the most travelled destinations",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "Your requests were retrieved successfully",
+                "data": {
+                    "data": [
+                        {
+                            "id": 1,
+                            "name": "HOTEL",
+                            "status": "Available",
+                            "imageUrl": null,
+                            "amenities": null,
+                            "locationId": 1,
+                            "description": null,
+                            "services": null,
+                            "createdAt": "2019-10-02T17:08:18.684Z",
+                            "updatedAt": "2019-10-02T17:08:18.684Z",
+                            "Rooms": [],
+                            "Likes": [],
+                            "Feedbacks": []
+                        },
+                        {
+                            "id": 2,
+                            "name": "MARIOT",
+                            "status": "Unavailable",
+                            "imageUrl": null,
+                            "amenities": null,
+                            "locationId": 1,
+                            "description": null,
+                            "services": null,
+                            "createdAt": "2019-10-02T17:08:18.684Z",
+                            "updatedAt": "2019-10-02T17:08:18.684Z",
+                            "Rooms": [],
+                            "Likes": [],
+                            "Feedbacks": []
+                        }
+                    ],
+                    "count": 2
+                }
+            }
+            }
+          },
+          "401": {
+            "description": "invalid or expired token",
+            "examples": {
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requests/my-requests": {
+      "get": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "View my requests",
+        "description": "User can view all the request he/she has made",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "401": {
+            "status": 401,
+            "message": "Invalid or expired token used"
+          },
+          "200": {
+            "status": 200,
+            "message": "Your requests were retrieved successfully",
+            "data": []
+          }
+        }
+      }
+    },
+    "/requests/{id}": {
+      "get": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "Get one request",
+        "description": "get one request in the application",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "request Id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "request found",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "Request retrieved successfully",
+                "data": [
+                    {
+                        "id": 1,
+                        "from": "KIGALI, RWANDA",
+                        "travelDate": [
+                            "2019-10-01"
+                        ],
+                        "returnDate": "2019-12-12",
+                        "reason": "Business Travel",
+                        "status": "Pending",
+                        "user": 5,
+                        "createdAt": "2019-10-07T08:51:56.082Z",
+                        "updatedAt": "2019-10-07T08:51:56.082Z",
+                        "accommodations": []
+                    }
+                ]
+            }
+            }
+          },
+          "401": {
+            "description": "invalid or expired token",
+            "examples": {
+              "application/json": {
+                "status": 401,
+                "message": "Invalid or expired token used",
+                "error": {
+                  "name": "JsonWebTokenError",
+                  "message": "jwt must be provided"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "request not found",
+            "examples": {
+              "application/json": {
+                "status": 404,
+                "message": "error",
+                "error": "request not found"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requests/pending": {
+      "get": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "Manager view pending requests",
+        "description": "Manager can view all the request pending approval",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "401": {
+            "status": 401,
+            "message": "Invalid or expired token used"
+          },
+          "200": {
+            "status": 200,
+            "message": "Your requests were retrieved successfully",
+            "data": []
+          }
+        }
+      }
+    },
+    "/requests/return-trip": {
+      "post": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "create a return trip request",
+        "description": "this endpoint sends and creates a return trip",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Return Trip request data entered by the user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/returnTrip"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request sucessfully retrieved"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "404": {
+            "description": "Accommodation or location not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/requests/oneWay": {
+      "post": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "create a One way trip request",
+        "description": "this endpoint sends and creates a one way trip",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "One way request data entered by the user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/oneWay"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request sucessfully retrieved"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "404": {
+            "description": "Accommodation or location not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/requests/multi-city": {
+      "post": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "create a multi-city trip request",
+        "description": "this endpoint sends and creates a multi-city trip",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Returb Trip request data entered by the user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/multiCity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request sucessfully retrieved"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "404": {
+            "description": "Accommodation or location not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/profile": {
+      "patch": {
+        "path": "/profile",
+        "tags": [
+          "user profile"
+        ],
+        "summary": "Update user profile details",
+        "description": "End point for updating user profile by using userId in the token",
+        "operationId": "updateProfile",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User Profile needs to be updated",
+            "schema": {
+              "$ref": "#/definitions/UserProfile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile updated successfully"
+          },
+          "401": {
+            "description": "Invalid or Expired token used"
+          },
+          "422": {
+            "description": "Validation error in one or more fields"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "user profile"
+        ],
+        "summary": "Get user profile details",
+        "description": "End point for getting user profile by using userId in the token",
+        "operationId": "getProfile",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully"
+          },
+          "401": {
+            "description": "Invalid or Expired token used"
+          },
+          "422": {
+            "description": "Validation error in one or more fields"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "barefoot_auth": [
+              "write:profiles",
+              "read:profiles"
+            ]
+          }
+        ]
+      }
+    },
+    "/requests/{request}/comment": {
+      "post": {
+        "tags": [
+          "request comments"
+        ],
+        "summary": "Add a comment on the request",
+        "description": "This end points allows the manager or the request owner to comment on the request",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "request",
+            "in": "path",
+            "description": "Request ID",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Payload to add comment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/comment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Comment successfully added"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "403": {
+            "description": "Not allowed to comment on request"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/requests/comments/{id}": {
+      "put": {
+        "tags": [
+          "request comments"
+        ],
+        "summary": "Update a comment",
+        "description": "This endpoint allows the request owner or the manager to update their comment on a request",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Comment ID",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Payload to update comment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/comment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment successfully updated"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "403": {
+            "description": "Not allowed to update comment on request"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "request comments"
+        ],
+        "summary": "Delete a comment",
+        "description": "This endpoint allows the request owner or the manager to delete their comment on a request",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Comment ID",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment successfully deleted"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "403": {
+            "description": "Not allowed to delete comment on request"
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/requests/{request}/comments": {
+      "get": {
+        "tags": [
+          "request comments"
+        ],
+        "summary": "View comments on a request",
+        "description": "On this endpoint, a request owner or manager can retrieve comments on the requests",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "request",
+            "in": "path",
+            "required": true,
+            "description": "Request ID",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comments successfully retrieved"
+          },
+          "404": {
+            "description": "Request not found"
+          },
+          "403": {
+            "description": "Not allowed to retrieve comments on request"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/requests/reject/{requestId}": {
+      "patch": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "reject request",
+        "description": "managaer can reject pedning requests",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "request Id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "reason",
+            "in": "formData",
+            "description": "reason for rejecting",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "request rejected successfully"
+          },
+          "401": {
+            "description": "invalid or expired token"
+          },
+          "403": {
+            "description": "not allowed to perform this task"
+          },
+          "404": {
+            "description": "request not found"
+          },
+          "422": {
+            "description": "validations failed"
+          }
+        }
+      }
+    },
+    "/requests/accept/{requestId}": {
+      "patch": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "accept request",
+        "description": "managaer can reject pedning requests",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "an authorization header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "request Id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "reason",
+            "in": "formData",
+            "description": "reason for rejecting",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "request rejected successfully"
+          },
+          "401": {
+            "description": "invalid or expired token"
+          },
+          "403": {
+            "description": "not allowed to perform this task"
+          },
+          "404": {
+            "description": "request not found"
+          },
+          "422": {
+            "description": "validations failed"
+          }
+        }
+      }
+    },
+    "/requests/{requestID}": {
+      "put": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "Edit a single request",
+        "description": "On this endpoint, a request owner can edit a request",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "One way request data entered by the user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/oneWay"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update has been completed successfully",
+            "examples": {
+              "application/json": {
+                "status": 200,
+                "message": "Update has been completed successfully",
+                "data": {
+                  "from": "Kigali, Rwanda",
+                  "travelDate": [
+                    "2019-11-02"
+                  ],
+                  "returnDate": "2019-11-04",
+                  "reason": "hey the nklnk;joihnbyugvytgtfredersg;lklmnjnbvytfyfjo",
+                  "status": "Pending",
+                  "updatedAt": "2019-09-25T05:39:12.841Z",
+                  "manager": "marveldev53@gmail.com",
+                  "user": "Jonathan",
+                  "userEmail": {
+                    "id": 5,
+                    "userEmail": "jonashyaka2@gmail.com",
+                    "firstName": "Jonathan",
+                    "lastName": "Shyaka",
+                    "accountVerified": true,
+                    "userRoles": "Requester",
+                    "iat": 1569389939,
+                    "exp": 1569393539
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Can't send an empty object"
+          },
+          "403": {
+            "description": "You don't have rights to edit this request"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/search/requests":{
+      "get": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "Search requests",
+        "description": "End point for searching requests",
+        "operationId": "searchRequests",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name" : "status",
+            "in" : "query",
+            "description" : "pending, approved, rejected",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "id",
+            "in" : "query",
+            "description" : "Request Id",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "travelDate",
+            "in" : "query",
+            "description" : "TravelDate Format yyyy-mm-dd",
+            "required" : false,
+            "type" : "date"
+          },
+          {
+            "name" : "returnDate",
+            "in" : "query",
+            "description" : "returnDate Format yyyy-mm-dd",
+            "required" : false,
+            "type" : "date"
+          },
+          {
+            "name" : "accommodation",
+            "in" : "query",
+            "description" : "pass a name of accommodation",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "requester",
+            "in" : "query",
+            "description" : "firstName , lastName of requester",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "user",
+            "in" : "query",
+            "description" : "userId of requester",
+            "required" : false,
+            "type" : "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requests retrieved successfully"
+          },
+          "401": {
+            "description": "Invalid or Expired token used"
+          },
+          "422": {
+            "description": "Invalid query parameters passed"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "barefoot_auth": [
+              "read:requests"
+            ]
+          }
+        ]
+      }
+    },
+    "/accommodations/{accommodation}/feedback": {
+      "put": {
+        "tags": [
+          "accommodation"
+        ],
+        "summary": "Add feedback on the accommodation",
+        "description": "This end points allows the users to feedback on the accommodation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "feedback",
+            "description": "Payload to add feedback",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/feedbacks"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Feedback added successfully"
+          },
+          "422": {
+            "description": "Wrong Data format is entered"
+          },
+          "403": {
+            "description": "Not allowed to the accommodation"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/requests/trip-stats": {
+      "post": {
+        "tags": [
+          "requests"
+        ],
+        "summary": "Trip Statistics",
+        "description": "User can acquire trip statistics in a secified last time frame",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "parameter",
+            "in": "formData",
+            "description": "Enter time description one of 'months', 'years', 'days' or 'weeks'",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "in": "formData",
+            "description": "Number of the selected time description. (time-frame) ",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password succesfully updated"
+          },
+          "401": {
+            "description": "unauthorised"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "oneWay": {
+      "required": [
+        "from",
+        "to",
+        "travelDate",
+        "reason",
+        "accommodation"
+      ],
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "example": "Kigali, Rwanda"
+        },
+        "to": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the locationId"
+        },
+        "travelDate": {
+          "type": "date",
+          "example": "2020-01-01",
+          "summary": "this is the date of travel and should atleast today"
+        },
+        "reason": {
+          "type": "string",
+          "example": "this is my travel reason and it should be more than 30 characters",
+          "summary": "this is reason and should be more than 30 characters"
+        },
+        "accommodation": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the accommodationId"
+        }
+      }
+    },
+    "returnTrip": {
+      "required": [
+        "from",
+        "to",
+        "travelDate",
+        "returnDate",
+        "reason",
+        "accommodation"
+      ],
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "example": "Kigali, Rwanda"
+        },
+        "to": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the locationId"
+        },
+        "travelDate": {
+          "type": "date",
+          "example": "2020-01-01",
+          "summary": "this is the date of travel and should atleast today"
+        },
+        "returnDate": {
+          "type": "date",
+          "example": "2020-02-30",
+          "summary": "this is the date of return and should be greater tha travel date"
+        },
+        "reason": {
+          "type": "string",
+          "example": "this is my travel reason and it should be more than 30 characters",
+          "summary": "this is reason and should be more than 30 characters"
+        },
+        "accommodation": {
+          "type": "integer",
+          "example": 1,
+          "summary": "this is the accommodationId"
+        }
+      }
+    },
+    "multiCity": {
+      "required": [
+        "from",
+        "to",
+        "travelDate",
+        "reason",
+        "accommodation"
+      ],
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "example": "Kigali, Rwanda"
+        },
+        "to": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "example": [
+            1,
+            2
+          ],
+          "summary": "this is the locationId array"
+        },
+        "travelDate": {
+          "type": "array",
+          "items": {
+            "type": "date"
+          },
+          "example": [
+            "2020-01-01",
+            "2020-11-01"
+          ],
+          "summary": "this is the array of date of travel and should atleast today"
+        },
+        "returnDate": {
+          "type": "date",
+          "example": "2020-02-30",
+          "summary": "this is the date of return and should be greater tha travel date"
+        },
+        "reason": {
+          "type": "string",
+          "example": "this is my travel reason and it should be more than 30 characters",
+          "summary": "this is reason and should be more than 30 characters"
+        },
+        "accommodation": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "hotel",
+            "sheraton"
+          ],
+          "summary": "this is the accommodationId"
+        }
+      }
+    },
+    "UserProfile": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "birthDate": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "comment": {
+      "required": [
+        "comment"
+      ],
+      "type": "object",
+      "properties": {
+        "comment": {
+          "type": "string",
+          "example": "Please clarify the travel reason",
+          "summary": "This is an updated comment on the request"
+        }
+      }
+    },
+    "feedbacks": {
+      "required": [
+        "feedback"
+      ],
+      "type": "object",
+      "properties": {
+        "feedback": {
+          "type": "string",
+          "example": "Please clarify the travel reason",
+          "summary": "This is to add feedback to an accommodation"
+        }
+      }
+    },
+    "userByAdmin": {
+      "required": [
+        "userEmail",
+        "lastName",
+        "firstName",
+        "userPassword",
+        "role"
+      ],
+      "type": "object",
+      "properties": {
+        "userEmail": {
+          "type": "string",
+          "example": "test@gmail.com"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "test",
+          "summary": "this is the last name of user"
+        },
+        "firstName": {
+          "type": "string",
+          "example": "test",
+          "summary": "this is first name of user"
+        },
+        "userPassword": {
+          "type": "string",
+          "example": "Password@1",
+          "summary": "password must have atleast 1 special character, 1 uppercase, 1 lowercase and more than 8 characters"
+        },
+        "role": {
+          "type": "string",
+          "example": "Accommodation Supplier",
+          "summary": "this is user role "
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
+}
