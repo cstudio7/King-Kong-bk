@@ -107,6 +107,7 @@ Make company global travel and accommodation easy and convenient for the strong 
 - Heroku For Hosting
 ## Contributors 
 - [Bahati Robben](https://github.com/Bahatiroben)
+- [Victor_Godwin](https://github.com/cstudio7)
 - [Davis Kabiswa](https://github.com/Dkabiswa)
 - [Jonathan Aurugai](https://github.com/j0flintking02)
 - [Jonathan Shyaka](https://github.com/drayzii)
